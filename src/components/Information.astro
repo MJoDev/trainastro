@@ -1,0 +1,115 @@
+<div class="info-container">
+    <button id="info-button" class="info-button">i</button>
+    <div id="info-modal" class="info-modal">
+      <div class="info-modal-content">
+        <span id="close-info" class="close">&times;</span>
+        <h2>¿Cómo funciona la página?</h2>
+        <p>Esta página te permite agregar ejercicios con su respectiva cantidad de series ejecutadas y el nivel de activación muscular para diferentes grupos musculares.</p>
+        <ul>
+          <li>Primero, agrega un ejercicio usando el botón "Agregar Ejercicio".</li>
+          <li>Luego, ingresa el número de series realizadas en el campo correspondiente.</li>
+          <li>Para cada grupo muscular, ingresa un valor de activación (de 0 a 1), donde 1 es la activación máxima.</li>
+          <li>Presiona "Generar Gráfica" para ver la cantidad de series totales por grupo muscular.</li>
+        </ul>
+        <p>El valor de series ideal por grupo muscular es de 10 a 20 series semanales. Tomalo en cuenta para organizar mejor tus rutinas. Evita el sobre entrenamiento y la falta de series en un musculo.</p>
+        <p>¡Gracias por usar la página!</p>
+      </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const infoButton = document.getElementById('info-button');
+    const infoModal = document.getElementById('info-modal');
+    const closeInfo = document.getElementById('close-info');
+
+    // Mostrar el modal cuando se presiona el botón "i"
+    infoButton.addEventListener('click', () => {
+      infoModal.style.display = 'flex';
+    });
+
+    // Cerrar el modal cuando se presiona el botón de cerrar
+    closeInfo.addEventListener('click', () => {
+      infoModal.style.display = 'none';
+    });
+
+    // Cerrar el modal si se hace clic fuera del contenido del modal
+    window.addEventListener('click', (event) => {
+      if (event.target === infoModal) {
+        infoModal.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+<style>
+     /* Estilos para el botón de información */
+  .info-button {
+    background-color: #2c2c2a;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+    transition: background-color 0.3s;
+  }
+
+  .info-button:hover {
+    background-color: #E45826;
+  }
+    /* Estilos del modal */
+  .info-modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .info-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    text-align: left;
+    position: relative;
+  }
+
+  .info-modal-content h2 {
+    margin-top: 0;
+  }
+
+  .info-modal-content p, ul {
+    margin: 10px 0;
+  }
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #aaa;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover {
+    color: #000;
+  }
+</style>

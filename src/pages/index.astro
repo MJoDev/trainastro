@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import TableTrain from '../components/TableTrain.astro';
+import Information from '../components/Information.astro';
+---
+
+<Layout title="TrainAstro">
+	<Information />
+	<div class="container ">
+		<h3>TrainAstro</h3>
+		<TableTrain />
+	</div>
+	<div class="Sangria">a</div>
+</Layout>
+
+<style>
+	/* Fondo animado de degradado */
+	body {
+	  margin: 0;
+	  padding: 0;
+	  font-family: 'Arial', sans-serif;
+	  height: 100vh;
+	  background: linear-gradient(120deg, #1B1A17, #E6D5B8, #FCA50D, #E45826);
+	  background-size: 300% 300%;
+	  animation: gradientAnimation 10s ease infinite;
+	}
+  
+	@keyframes gradientAnimation {
+	  0% {
+		background-position: 0% 50%;
+	  }
+	  50% {
+		background-position: 100% 50%;
+	  }
+	  100% {
+		background-position: 0% 50%;
+	  }
+	}
+  
+	/* Ajustar el tamaño del contenedor principal */
+	.container {
+	  color: white;
+	  z-index: 1;
+	  background-color: white;
+	  border-radius: 20px;
+	  margin: 50px;
+	  margin-bottom: 100px;
+	}
+  
+	h2 {
+	  font-size: 3em;
+	}
+  
+	p {
+	  font-size: 1.2em;
+	}
+  
+	/* Asegurarnos de que el contenido esté por encima del fondo */
+	.content {
+	  position: relative;
+	  z-index: 10;
+	}
+  
+	/* Efecto de overlay para mayor contraste si es necesario */
+	.overlay {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  background: rgba(0, 0, 0, 0.8);
+	  z-index: 5;
+	}
+	.Sangria {
+		margin-top: 100px;
+	}
+  </style>

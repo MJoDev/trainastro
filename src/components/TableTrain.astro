@@ -1,0 +1,296 @@
+---
+const gruposMusculares = [
+  'Cuadriceps', 'Femorales', 'Gluteos', 'Pecho', 
+  'Deltoides Frontal', 'Deltoides Lateral', 'Espalda', 'Biceps',
+  'Trapecio', 'Triceps', 'Gemelos', 'Abdominales'
+];
+---
+<h2 class="toc-title">Tabla de número de series por grupo muscular</h2>
+<h3>Introduce todos los ejercicios ejecutados a lo largo de la semana asi como tu percepción de activacion en cada musculo, y calcula el total de series por grupo muscular</h3>
+<div class="tabla-muscular toc">
+  <table class="toc-list">
+    <thead>
+      <tr>
+        <th>Ejercicio</th>
+        <th>Número de series ejecutadas</th>
+        {gruposMusculares.map(grupo => (
+          <th>{grupo}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody id="tabla-cuerpo">
+      <!-- Las filas se agregarán dinámicamente con JavaScript -->
+    </tbody>
+  </table>
+  <button id="agregar-ejercicio">Agregar Ejercicio</button>
+  <button id="generar-grafica">Generar Gráfica</button>
+</div>
+
+<div class="grafica-container">
+  
+  <canvas id="grafica-muscular"></canvas>
+</div>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  import { Chart} from 'chart.js';
+  import { BarController, BarElement, CategoryScale, LinearScale } from 'chart.js';
+  Chart.register(BarController, BarElement, CategoryScale, LinearScale);
+  document.addEventListener('DOMContentLoaded', () => {
+    const tablaCuerpo = document.getElementById('tabla-cuerpo');
+    const botonAgregar = document.getElementById('agregar-ejercicio');
+    const botonGenerarGrafica = document.getElementById('generar-grafica');
+    const gruposMusculares = [
+      'Cuadriceps', 'Femorales', 'Gluteos', 'Pecho', 
+      'Deltoides Frontal', 'Deltoides Lateral', 'Espalda', 'Biceps',
+      'Trapecio', 'Triceps', 'Gemelos', 'Abdominales'
+    ];
+
+    let grafica;
+
+    function crearFilaEjercicio() {
+      const fila = document.createElement('tr');
+      
+      // Celda para el nombre del ejercicio
+      const celdaEjercicio = document.createElement('td');
+      const inputEjercicio = document.createElement('input');
+      inputEjercicio.type = 'text';
+      inputEjercicio.placeholder = 'Nombre del ejercicio';
+      celdaEjercicio.appendChild(inputEjercicio);
+      fila.appendChild(celdaEjercicio);
+
+      // Celda para el número de series
+      const celdaSeries = document.createElement('td');
+      const inputSeries = document.createElement('input');
+      inputSeries.type = 'number';
+      inputSeries.min = '1';
+      inputSeries.placeholder = 'Número de series';
+      celdaSeries.appendChild(inputSeries);
+      fila.appendChild(celdaSeries);
+
+      // Celdas para los grupos musculares
+      gruposMusculares.forEach(() => {
+        const celda = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = '0';
+        input.step = '0.1';
+        input.max = "1.000000000000000"
+        celda.appendChild(input);
+        fila.appendChild(celda);
+      });
+
+      tablaCuerpo.appendChild(fila);
+    }
+
+    function calcularTotalPorMusculo() {
+  const totales = new Array(gruposMusculares.length).fill(0);
+  const filas = tablaCuerpo.querySelectorAll('tr');
+
+  filas.forEach(fila => {
+    const inputs = fila.querySelectorAll('input');
+    
+    // El número de series está en la segunda columna (índice 1)
+    const series = parseFloat(inputs[1].value) || 0;
+
+    // Los valores de activación están a partir del tercer input (índice 2)
+    gruposMusculares.forEach((_, index) => {
+      const valor = parseFloat(inputs[index + 2].value) || 0;
+      totales[index] += series * valor;
+      console.log(valor, series, totales[index]);
+    });
+  });
+
+  return totales.map(total => Math.ceil(total));
+}
+
+function generarGrafica() {
+      const totales = calcularTotalPorMusculo();
+
+      if (grafica) {
+        grafica.destroy();
+        grafica = null;
+      }
+
+      const canvas = document.getElementById('grafica-muscular');
+      if (canvas instanceof HTMLCanvasElement) {
+        const ctx = canvas.getContext('2d');
+        grafica = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: gruposMusculares,
+          datasets: [{
+            label: 'Total de series por músculo',
+            data: totales,
+            backgroundColor: 'rgba(44, 44, 42, 0.8)',
+            borderColor: 'rgba(44, 44, 42, 0.8)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+    }
+     
+    botonAgregar.addEventListener('click', crearFilaEjercicio);
+    botonGenerarGrafica.addEventListener('click', generarGrafica);
+
+    // Crear la primera fila al cargar la página
+    crearFilaEjercicio();
+  });
+  
+</script>
+
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 20px;
+  }
+
+  h2 {
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  h3 {
+    color: #575757;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-right: 40px;
+    margin-left: 40px;
+  }
+
+  .tabla-muscular {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-x: auto; /* Para permitir scroll horizontal en pantallas pequeñas */
+  }
+
+  .toc-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    min-width: 600px; /* Asegurar que la tabla no se achique demasiado */
+  }
+
+  .toc-list th, .toc-list td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+
+  .toc-list th {
+    background-color: #1B1A17;
+    color: #fff;
+  }
+
+  .toc-list td input {
+    width: 70%; /* Ajustar el ancho de los inputs */
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box; /* Para asegurarse de que padding no cambie el ancho */
+  }
+
+
+  .toc-list td {
+    width: 100px; /* Ajustar el ancho de cada celda */
+  }
+
+  button {
+    background-color: #F0A50D;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+  }
+
+  button:hover {
+    background-color: #E45626;
+  }
+
+  .grafica-container {
+    max-width: 100%;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .grafica-container {
+  
+    overflow-x: auto; /* Scroll horizontal si es necesario */
+    margin-top: 20px;
+    padding: 0 20px; /* Un pequeño padding para mejorar la apariencia en móviles */
+  }
+
+  /* Media queries para pantallas pequeñas */
+  @media (max-width: 768px) {
+    body {
+      padding: 10px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    .tabla-muscular {
+      padding: 15px;
+    }
+
+    .toc-list {
+      font-size: 14px;
+    }
+
+    button {
+      padding: 8px 15px;
+      font-size: 14px;
+    }
+
+    .grafica-container {
+      padding: 15px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    h2 {
+      font-size: 18px;
+    }
+
+    .toc-list {
+      font-size: 12px;
+    }
+
+    button {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+  }
+  
+  
+</style>
